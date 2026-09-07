@@ -64,5 +64,6 @@ builder.defineStreamHandler(({ type, id }) => {
     return Promise.resolve({ streams: [] });
 });
 
-serveHTTP(builder.getInterface(), { port: 7000 });
+//serveHTTP(builder.getInterface(), { port: 7000 });
+serveHTTP(builder.getInterface(), { port: process.env.PORT || 7000, host: '0.0.0.0' });
 console.log("Motor de Marina Gaming ejecutándose con código modularizado...");
