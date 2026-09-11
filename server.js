@@ -51,22 +51,29 @@ builder.defineMetaHandler(({ type, id }) => {
 
 // --- 3. MANEJADOR DE STREAM BLINDADO ---
 builder.defineStreamHandler(({ type, id }) => {
+    console.log(`🔎 Stremio pide el stream de -> ${id}`);
     const allContent = [...VOD_CATALOG, ...LIVE_CATALOG];
     const item = allContent.find(v => v.id === id);
 
     if (item) {
-        if (item.type === "tv" || item.type === "movie") {
-            return Promise.resolve({ 
-                streams: [{ 
-                    title: item.name, 
-                    url: item.url, 
-                    ytId: item.ytId 
-                }] 
-            });
+        console.log(`✅ Elemento encontrado en base de datos: ${item.name}`);
+        let streamObject = { title: "▶️ Reproducir " + item.name };
+
+        // Construimos el objeto limpio, sin campos "undefined"
+        if (item.ytId) {
+            streamObject.ytId = item.ytId;
+            console.log(`🔗 Enviando YouTube ID a Stremio: ${item.ytId}`);
+        } else if (item.url) {
+            streamObject.url = item.url;
+            console.log(`🔗 Enviando URL HLS a Stremio: ${item.url}`);
         }
+
+        // cacheMaxAge: 0 evita que Stremio guarde caché si algo sale mal
+        return Promise.resolve({ streams: [streamObject], cacheMaxAge: 0 });
     }
 
-    return Promise.resolve({ streams: [] });
+    console.log(`❌ No se encontró el ID en la base de datos.`);
+    return Promise.resolve({ streams: [], cacheMaxAge: 0 });
 });
 
 // --- DESPLIEGUE HTTPS NATIVO CON CORS Y LOGS VERBOSOS ---

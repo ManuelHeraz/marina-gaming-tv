@@ -2,7 +2,7 @@
 
 const VOD_CATALOG = [
     {
-        id: "marina_vod_01",
+        id: "marina_vod_01_v2",
         type: "movie",
         name: "Golpe de Estado: Traición a la Patria",
         poster: "https://manuelheraz.github.io/MarinaGaming/pages/martv/img/m1.jpg", 
@@ -10,7 +10,7 @@ const VOD_CATALOG = [
         ytId: "3Yqs_qzRA9c"
     },
     {
-        id: "marina_vod_02",
+        id: "marina_vod_02_v2",
         type: "movie",
         name: "La Batalla de Los Ángeles",
         poster: "https://upload.wikimedia.org/wikipedia/en/a/a5/Grand_Theft_Auto_V.png",
@@ -18,7 +18,7 @@ const VOD_CATALOG = [
         ytId: "ZSFQjThMPuo"
     },
     {
-        id: "marina_vod_03",
+        id: "marina_vod_03_v2",
         type: "movie",
         name: "Ruzoone42",
         poster: "https://upload.wikimedia.org/wikipedia/en/e/e0/Assetto_Corsa_cover.jpg",
@@ -29,7 +29,7 @@ const VOD_CATALOG = [
 
 const LIVE_CATALOG = [
     {
-        id: "marina_live_01",
+        id: "marina_live_01_v2",
         type: "tv",
         name: "Marina Gaming TV 24/7",
         poster: "https://manuelheraz.github.io/MarinaGaming/pages/martv/img/m4.jpg",
