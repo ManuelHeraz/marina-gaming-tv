@@ -33,8 +33,8 @@ const LIVE_CATALOG = [
         type: "tv",
         name: "Marina Gaming TV 24/7",
         poster: "https://manuelheraz.github.io/MarinaGaming/pages/martv/img/m4.jpg",
-        description: "Transmisión 24/7 de la comunidad.",
-        url: "http://test.com/stream.m3u8" // Aquí pondremos la URL de Cloudflare en la Fase 2
+        description: "Canal 24/7 sobre Gaming, Videojuegos, un poco de anime y mas",
+        url: "https://pub-3404987dd8c841489f9a817427cea40d.r2.dev/tv-envivo/index.m3u8"
     }
 ];
 

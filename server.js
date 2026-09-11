@@ -9,7 +9,7 @@ const builder = new addonBuilder(manifest);
 
 // --- 1. MANEJADOR DE CATÁLOGOS ---
 builder.defineCatalogHandler(({ type, id }) => {
-    if (type === "tv" && id === "marina_channels") {
+    if (id === "marina_channels") {
         const liveMetas = LIVE_CATALOG.map(canal => ({
             id: canal.id, type: canal.type, name: canal.name,
             poster: canal.poster, description: canal.description
@@ -17,7 +17,7 @@ builder.defineCatalogHandler(({ type, id }) => {
         return Promise.resolve({ metas: liveMetas });
     }
 
-    if (type === "movie" && id === "marina_vod") {
+    if (id === "marina_vod") {
         const vodMetas = VOD_CATALOG.map(video => ({
             id: video.id, type: video.type, name: video.name,
             poster: video.poster, description: video.description
@@ -30,15 +30,18 @@ builder.defineCatalogHandler(({ type, id }) => {
 
 // --- 2. MANEJADOR DE METADATOS ---
 builder.defineMetaHandler(({ type, id }) => {
-    // Unimos ambos catálogos temporalmente para buscar el ID solicitado
     const allContent = [...VOD_CATALOG, ...LIVE_CATALOG];
     const item = allContent.find(v => v.id === id);
     
     if (item) {
         return Promise.resolve({
             meta: {
-                id: item.id, type: item.type, name: item.name,
-                poster: item.poster, description: item.description
+                id: item.id, 
+                type: item.type, 
+                name: item.name,
+                poster: item.poster, 
+                description: item.description,
+                background: item.poster
             }
         });
     }
@@ -46,26 +49,28 @@ builder.defineMetaHandler(({ type, id }) => {
     return Promise.resolve({ meta: {} });
 });
 
-// --- 3. MANEJADOR DE STREAM ---
+// --- 3. MANEJADOR DE STREAM BLINDADO ---
 builder.defineStreamHandler(({ type, id }) => {
-    if (type === "tv") {
-        const canal = LIVE_CATALOG.find(c => c.id === id);
-        if (canal) {
-            return Promise.resolve({ streams: [{ title: "Transmisión en Vivo", url: canal.url }] });
-        }
-    }
+    // Buscamos directamente por ID en ambos catálogos sin depender del tipo
+    const allContent = [...VOD_CATALOG, ...LIVE_CATALOG];
+    const item = allContent.find(v => v.id === id);
 
-    if (type === "movie") {
-        const video = VOD_CATALOG.find(v => v.id === id);
-        if (video) {
-            return Promise.resolve({ streams: [{ title: "Ver en Stremio (YouTube)", ytId: video.ytId }] });
+    if (item) {
+        if (item.type === "tv") {
+            return Promise.resolve({ 
+                streams: [{ title: "Marina Gaming TV (En Vivo)", url: item.url }] 
+            });
+        }
+        if (item.type === "movie") {
+            return Promise.resolve({ 
+                streams: [{ title: "Ver en Stremio (YouTube)", ytId: item.ytId }] 
+            });
         }
     }
 
     return Promise.resolve({ streams: [] });
 });
 
-//serveHTTP(builder.getInterface(), { port: 7000 });
 // --- DESPLIEGUE HTTPS NATIVO (Escudo-SSL) ---
 const app = express();
 app.use(getRouter(builder.getInterface()));
