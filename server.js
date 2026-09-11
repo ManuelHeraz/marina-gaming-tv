@@ -51,19 +51,28 @@ builder.defineMetaHandler(({ type, id }) => {
 
 // --- 3. MANEJADOR DE STREAM BLINDADO ---
 builder.defineStreamHandler(({ type, id }) => {
-    // Buscamos directamente por ID en ambos catálogos sin depender del tipo
     const allContent = [...VOD_CATALOG, ...LIVE_CATALOG];
     const item = allContent.find(v => v.id === id);
 
     if (item) {
         if (item.type === "tv") {
             return Promise.resolve({ 
-                streams: [{ title: "Marina Gaming TV (En Vivo)", url: item.url }] 
+                streams: [{ 
+                    title: "Marina Gaming TV (En Vivo)", 
+                    url: item.url,
+                    behaviorHints: { 
+                        notWebReady: false,
+                        bingeGroup: "marina-live"
+                    }
+                }] 
             });
         }
         if (item.type === "movie") {
             return Promise.resolve({ 
-                streams: [{ title: "Ver en Stremio (YouTube)", ytId: item.ytId }] 
+                streams: [{ 
+                    title: "Ver en Stremio", 
+                    ytId: item.ytId 
+                }] 
             });
         }
     }
