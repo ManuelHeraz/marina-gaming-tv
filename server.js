@@ -1,8 +1,9 @@
-// server.js
-
-const { addonBuilder, serveHTTP } = require("stremio-addon-sdk");
+const { addonBuilder, getRouter } = require("stremio-addon-sdk");
+const express = require("express");
+const https = require("https");
+const fs = require("fs");
 const manifest = require("./manifest"); 
-const { VOD_CATALOG, LIVE_CATALOG } = require("./catalog"); 
+const { VOD_CATALOG, LIVE_CATALOG } = require("./catalog");
 
 const builder = new addonBuilder(manifest);
 
@@ -65,5 +66,15 @@ builder.defineStreamHandler(({ type, id }) => {
 });
 
 //serveHTTP(builder.getInterface(), { port: 7000 });
-serveHTTP(builder.getInterface(), { port: process.env.PORT || 7000, host: '0.0.0.0' });
-console.log("Motor de Marina Gaming ejecutándose con código modularizado...");
+// --- DESPLIEGUE HTTPS NATIVO (Escudo-SSL) ---
+const app = express();
+app.use(getRouter(builder.getInterface()));
+
+const opcionesSSL = {
+    key: fs.readFileSync('/home/hernandezdiazjm00/.acme.sh/marbot.duckdns.org_ecc/marbot.duckdns.org.key'),
+    cert: fs.readFileSync('/home/hernandezdiazjm00/.acme.sh/marbot.duckdns.org_ecc/fullchain.cer')
+};
+
+https.createServer(opcionesSSL, app).listen(7000, '0.0.0.0', () => {
+    console.log("📺 Motor de Marina Gaming TV ejecutándose con HTTPS nativo en el puerto 7000...");
+});
