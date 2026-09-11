@@ -55,22 +55,11 @@ builder.defineStreamHandler(({ type, id }) => {
     const item = allContent.find(v => v.id === id);
 
     if (item) {
-        if (item.type === "tv") {
+        if (item.type === "tv" || item.type === "movie") {
             return Promise.resolve({ 
                 streams: [{ 
-                    title: "Marina Gaming TV (En Vivo)", 
-                    url: item.url,
-                    behaviorHints: { 
-                        notWebReady: false,
-                        bingeGroup: "marina-live"
-                    }
-                }] 
-            });
-        }
-        if (item.type === "movie") {
-            return Promise.resolve({ 
-                streams: [{ 
-                    title: "Ver en Stremio", 
+                    title: item.name, 
+                    url: item.url, 
                     ytId: item.ytId 
                 }] 
             });
@@ -80,8 +69,21 @@ builder.defineStreamHandler(({ type, id }) => {
     return Promise.resolve({ streams: [] });
 });
 
-// --- DESPLIEGUE HTTPS NATIVO (Escudo-SSL) ---
+// --- DESPLIEGUE HTTPS NATIVO CON CORS Y LOGS VERBOSOS ---
 const app = express();
+
+// Middleware de diagnóstico y CORS obligatorio para Stremio
+app.use((req, res, next) => {
+    console.log(`📥 [STREMIO PETICIÓN] Método: ${req.method} | URL: ${req.url}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
+
 app.use(getRouter(builder.getInterface()));
 
 const opcionesSSL = {
@@ -90,5 +92,5 @@ const opcionesSSL = {
 };
 
 https.createServer(opcionesSSL, app).listen(7000, '0.0.0.0', () => {
-    console.log("📺 Motor de Marina Gaming TV ejecutándose con HTTPS nativo en el puerto 7000...");
+    console.log("📺 Motor de Marina Gaming TV ejecutándose con HTTPS nativo y CORS activo en el puerto 7000...");
 });
