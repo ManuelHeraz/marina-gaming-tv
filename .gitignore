@@ -12,3 +12,28 @@ yarn-error.log*
 # Archivos basura del sistema operativo
 .DS_Store
 Thumbs.db
+# Dependencias de Node.js (se instalan solas en el servidor)
+node_modules/
+
+# Archivos multimedia pesados (evita saturar GitHub)
+*.mp4
+fallback.mp4
+
+# Archivos temporales y de transmisión (generados automáticamente por FFmpeg)
+*.ts
+*.m3u8
+*.m3u8.tmp
+actual.mp4
+siguiente.mp4
+emergencia.mp4
+temp_*.mp4
+
+# Carpeta de buffer del sistema JIT
+cola_videos/
+
+# Variables de entorno (si llegas a usar claves secretas a futuro)
+.env
+
+# Basura del sistema operativo
+.DS_Store
+Thumbs.db
